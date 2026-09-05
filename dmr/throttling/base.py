@@ -266,7 +266,7 @@ class SyncThrottle(_BaseThrottle[BaseThrottleSyncBackend]):
         cache_key = self.full_cache_key(endpoint, controller)
         if cache_key is None:
             return
-        with lock:
+        with self._backend.lock(lock):
             self._check(endpoint, controller, cache_key)
 
     def report_usage(
@@ -330,7 +330,7 @@ class AsyncThrottle(_BaseThrottle[BaseThrottleAsyncBackend]):
         cache_key = self.full_cache_key(endpoint, controller)
         if cache_key is None:
             return
-        async with lock:
+        async with self._backend.lock(lock):
             await self._check(endpoint, controller, cache_key)
 
     async def report_usage(
